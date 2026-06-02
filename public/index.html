@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>AI Review Responder</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0a0f;color:#e2e8f0;font-family:system-ui,sans-serif;padding:20px}.container{max-width:640px;margin:0 auto}h1{font-size:24px;color:#00f5d4;text-align:center;margin-bottom:8px}.card{background:#12121a;border:1px solid rgba(0,245,212,.1);border-radius:16px;padding:20px;margin-bottom:16px}textarea,input,select{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(0,245,212,.15);border-radius:10px;padding:12px;color:#e2e8f0;font-size:15px;margin-bottom:12px}textarea{min-height:100px}.btn{width:100%;background:linear-gradient(135deg,#00f5d4,#7c3aed);color:#0a0a0f;font-weight:700;padding:14px;border-radius:12px;border:none;cursor:pointer;font-size:16px}.btn:disabled{opacity:.5}.response-box{background:rgba(0,0,0,.3);border-radius:12px;padding:16px;white-space:pre-wrap;line-height:1.7}.sub{text-align:center;color:#64748b;margin-bottom:24px;font-size:14px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.money-tip{background:rgba(0,245,212,.05);border:1px solid rgba(0,245,212,.1);border-radius:12px;padding:16px;margin-top:24px;color:#94a3b8;font-size:14px}
+</style></head>
+<body><div class="container">
+<h1>⚡ AI Review Responder</h1>
+<p class="sub">Paste a review. Get a perfect response in seconds.</p>
+<div class="card">
+<textarea id="review" placeholder="Paste the review here..."></textarea>
+<div class="row"><input id="business" placeholder="Business Name"><input id="respondAs" placeholder="Respond As"></div>
+<div class="row"><select id="rating"><option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3" selected>3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option></select>
+<select id="tone"><option value="professional">Professional</option><option value="friendly">Friendly</option><option value="apologetic">Apologetic</option><option value="thankful">Thankful</option></select></div>
+<button class="btn" id="genBtn">✨ Generate Response</button>
+<div id="output" style="display:none;margin-top:16px"><div class="response-box" id="responseText"></div><button class="btn" id="copyBtn" style="margin-top:8px">📋 Copy</button></div>
+<div id="error" style="display:none;color:#f87171;margin-top:8px"></div>
+</div>
+<div class="money-tip"><strong style="color:#00f5d4">💸 Make Money Tonight</strong><ol style="padding-left:20px;margin-top:8px;line-height:1.8"><li>Find a local business on Google Maps</li><li>Copy a recent review</li><li>Generate a response here</li><li>DM them: "I wrote a response for that review. 10 for $20."</li></ol></div>
+</div>
+<script>
+document.getElementById('genBtn').onclick=async()=>{const r=document.getElementById('review').value.trim();if(!r)return;document.getElementById('genBtn').disabled=true;document.getElementById('genBtn').textContent='⏳ Generating...';try{const d=await(await fetch('/api/respond',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewText:r,rating:parseInt(document.getElementById('rating').value),sentiment:'neutral',tone:document.getElementById('tone').value,businessName:document.getElementById('business').value,respondAs:document.getElementById('respondAs').value})})).json();if(d.response){document.getElementById('responseText').textContent=d.response;document.getElementById('output').style.display='block';document.getElementById('error').style.display='none'}else{document.getElementById('error').textContent=d.error||'Error';document.getElementById('error').style.display='block'}}catch(e){document.getElementById('error').textContent='Failed to connect';document.getElementById('error').style.display='block'}document.getElementById('genBtn').disabled=false;document.getElementById('genBtn').textContent='✨ Generate Response'}
+document.getElementById('copyBtn').onclick=async()=>{await navigator.clipboard.writeText(document.getElementById('responseText').textContent);document.getElementById('copyBtn').textContent='✅ Copied!';setTimeout(()=>document.getElementById('copyBtn').textContent='📋 Copy',2000)}
+</script></body></html>
